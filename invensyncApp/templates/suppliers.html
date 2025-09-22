@@ -1,0 +1,122 @@
+<!--CHANGES FOR DB WERE MADE TO SETTINGS.PY, VIEWS, MODELS =, THIS FILE AND MANAGE.HTML-->
+{% load static %}   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suppliers - Inventory Management</title>
+    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'manage' %}" class="active">Manage Inventory</a></li>
+            <li><a href="{% url 'help' %}">Help & Support</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>InvenSync:</h1>
+            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
+        </div>
+        <div class="container">
+            <h2>Suppliers Management</h2>
+            <p>Manage your suppliers efficiently.</p>
+            
+            <!-- Supplier Form -->
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Supplier Name" required>
+                <input type="text" name="material" placeholder="Material" required>
+                <input type="text" name="contact" placeholder="Contact Number" required>
+                <button type="submit">Add Supplier</button>
+            </form>
+            
+            <!-- Supplier Table -->
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Supplier</th>
+                        <th>Material</th>
+                        <th>Contact Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for supplier in suppliers %}
+                    <tr>
+                        <td>{{ supplier.name }}</td>
+                        <td>{{ supplier.material }}</td>
+                        <td>{{ supplier.contact }}</td>
+                        <td>
+                            <!-- Edit Button -->
+                            <a href="{% url 'edit_supplier' supplier.id %}" class="action-btn edit-btn">Edit</a>
+                            <!-- Delete Button -->
+                            <a href="{% url 'delete_supplier' supplier.id %}" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this supplier?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+<!-- THE FOLLOWING WAS THE INITIAL HTML BEFORE APPLYING DATABASE CONNECTION
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suppliers - Inventory Management</title>
+    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'dashboard' %}" class="active">Dashboard</a></li>
+            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
+            <li><a href="{% url 'help' %}">Help & Support</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>InvenSync:</h1>
+            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
+        </div>
+        <div class="container">
+            <h2>Inventory Management</h2>
+            <p>Manage your inventory efficiently.</p>
+            <!-- Inventory Form --><!--Here is extra comment
+            <div class="form-group">
+                <input type="text" id="itemName" placeholder="Supplier">
+                <input type="text" id="itemQuantity" placeholder="Material">
+                <input type="number" id="itemPrice" placeholder="Contact Number">
+                <button id="addItemBtn">ADD</button>
+            </div>
+            <!-- Inventory Table --><!-- Here is extra comment
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Supplier</th>
+                        <th>Material</th>
+                        <th>Contact Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="{% static 'js/suppliers.js' %}"></script>
+</body>
+</html>

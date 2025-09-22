@@ -1,0 +1,65 @@
+How to create a Django Project:
+	1.Create a folder
+	2.Create a virtual enviroment using:
+		python -m venv YourEnvName
+	3.Then activate the venv:
+		YourEnvName\Scripts\activate
+		Once activated, you will see (YourEnvName) C:\..
+		You will also see a new folder named YourEnvName in the main folder, it will
+		contain Include, Lib, Scripts folder containing important files and 
+		.gitignore and pyvenv.cfg files
+	4.Install Django:
+		pip install Django
+	4A.You may get an option to upgrade pip:
+		python.exe -m pip install --upgrade pip
+	5.Django is installed, and pip is updated, now create the project:
+		django-admin startproject ProjectName .
+		You will see:
+			I.A new folder named ProjectName containing:
+				__init__.py,asgi.py,settings.py, urls.py,wsgi.py
+			II.A new file named manage.py and
+	7.Run:
+		python manage.py runserver
+		It will generate a link: http://127.0.0.1:8000/, and create a db.sqlite3 file
+		next to manage.py
+		You will also see migrations to be applied warning, which is required for 
+		database configuration, but it is not urgent to do that.
+	8.Open the link and you will see Django Welcome message, saying successfull installation
+	  Close the server by ctrlC
+	9.Now to create an app, ue the command:
+		python manage.py startapp AppName
+		It will create a folder named AppName containing: __init__.py, admin.py, apps.py
+		models.py, tests.py, views.py and a folder named migrations having __init__.py
+	10.Now create a file named urls.py in AppName
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+		    path('', views.dashboaard, name='dashboard'),
+		]#note that you may name dashboard as home,index,etc.
+	Now update the urlpatterns of urls.py of ProjectName to include the app's url configs.
+		from django.contrib import admin
+		from django.urls import path, include
+
+		urlpatterns = [
+    			path('admin/', admin.site.urls),
+		 	path('', include('invensyncApp.urls')),  # Replace 'my_app' with the name of your app
+		]
+	11.Now update the settings.py, in INSTALLED_APPS list include AppName.
+	12.In views.py:
+		from django.shortcuts import render
+		from django.http import HttpResponse
+
+		# Create your views here.
+
+		def dashboard(request):
+		    return HttpResponse("Welcome to the InvenSync Dashboard!")
+	  Run the server and you shall see the above message.
+		
+
+
+	
+
+		
+	
+	 

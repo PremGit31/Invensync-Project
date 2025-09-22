@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Inventory - Inventory Management</title>
+    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
+            <li><a href="{% url 'help' %}">Help & Support</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>InvenSync:</h1>
+            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
+        </div>
+        <div class="container">
+            <h2>Inventory Management</h2>
+            <p>Manage your inventory efficiently.</p>
+            
+            <!-- Inventory Form -->
+
+            
+            
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Item Name" required>
+                <input type="number" name="quantity" placeholder="Quantity" required>
+                <input type="number" step="0.01" name="price" placeholder="Price" required>
+                <!-- <input type="text" name = 'category' placeholder="Category">  -->
+                <button type="submit">Add Item</button>
+            </form>
+<!--ADDING SORTING BUTTONS HERE!-->
+            
+                         <!-- Sorting Buttons -->
+                <div class="sorting-buttons">
+                    <h3>Sort By:</h3>
+                    <a href="?sort_by=total_cost&order=asc" class="action-btn">Total Cost (Asc)</a>
+                    <a href="?sort_by=total_cost&order=desc" class="action-btn">Total Cost (Desc)</a>
+                    <a href="?sort_by=price&order=asc" class="action-btn">Price (Asc)</a>
+                    <a href="?sort_by=price&order=desc" class="action-btn">Price (Desc)</a>
+                    <a href="?sort_by=quantity&order=asc" class="action-btn">Quantity (Asc)</a>
+                    <a href="?sort_by=quantity&order=desc" class="action-btn">Quantity (Desc)</a>
+                    <a href="?sort_by=created_at&order=asc" class="action-btn">Time Added (First to Last)</a>
+                    <a href="?sort_by=created_at&order=desc" class="action-btn">Time Added (Last to First)</a>
+                </div>
+<!-- ABOVEE we are adding the sorting buttons to the table -->
+            
+            <!-- Inventory Table -->
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <!-- <th>Category</th> -->
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in inventory_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <!--Here was about category-->
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.total_cost|floatformat:2}}</td>
+                        <td>
+                            <!-- Edit Button -->
+                            <a href="{% url 'edit_inventory' item.id %}" class="action-btn edit-btn">Edit</a>
+                            <!-- Delete Button -->
+                            <a href="{% url 'delete_inventory' item.id %}" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- The follwoing was before db conn
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Inventory Management</title>
+    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'dashboard' %}" class="active">Dashboard</a></li>
+            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
+            <li><a href="{% url 'help' %}">Help & Support</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>InvenSync:</h1>
+            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
+        </div>
+        <div class="container">
+            <h2>Inventory Management</h2>
+            <p>Manage your inventory efficiently.</p>
+            <!-- Inventory Form --> <!--Here the extra comment
+            <div class="form-group">
+                <input type="text" id="itemName" placeholder="Item Name">
+                <input type="number" id="itemQuantity" placeholder="Quantity">
+                <input type="number" id="itemPrice" placeholder="Price">
+                <button id="addItemBtn">ADD ITEM</button>
+            </div>
+            <!-- Inventory Table --><!--Here the extra comment
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total Cost</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <!-- Inventory Summary --><!--Here the extra comment
+            <div id="inventory-summary">
+                <h3>Inventory Summary</h3>
+                <p>Total Items: <span id="total-items">0</span></p>
+                <p>Low Stock Items: <span id="low-stock">0</span></p>
+                <p>Total Inventory Value: $<span id="total-value">0.00</span></p>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/manage.js' %}"></script>
+</body>
+</html>

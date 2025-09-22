@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Inventory Management System</title>
+    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'manage' %}" class="active">Manage Inventory</a></li>
+            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>InvenSync:</h1>
+            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
+        </div>
+        
+        <div id="inventory-summary">
+            <p>
+                Welcome to InvenSync! This platform helps you manage your inventory efficiently.  
+                On the <strong>Suppliers</strong> page, you can add new suppliers, update their contact details, and delete entries as needed.  
+                The <strong>Manage</strong> page allows you to add inventory items, specify their quantity and price, and track total costs.  
+                The system also provides an inventory summary, highlighting total items, low-stock warnings, and overall inventory value.  
+                Use the provided buttons to edit or remove entries as required. Your data is stored locally for easy access.  
+            </p>
+            <p>
+                Need assistance? We're here to help! If you have any questions or face any issues while using InvenSync,  
+                feel free to reach out to our support team. You can contact us via email at  
+                <a href="mailto:support@invencsync.com">support@invencsync.com</a> or call us at +91 XXXXXXXXXX.  
+                Our support hours are Monday to Friday, 9 AM to 6 PM IST.  
+            </p>
+        </div>
+    </div>
+
+    <!-- <script src="{% static 'js/dashboard.js' %}"></script> -->
+</body>
+</html>

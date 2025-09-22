@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Inventory Management System</title>
+    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'manage' %}" class="active">Manage Inventory</a></li>
+            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
+            <li><a href="{% url 'help' %}">Help & Support</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>InvenSync:</h1>
+            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
+        </div>
+        
+        <div id="inventory-summary">
+
+            <p>
+                InvenSync is your all-in-one inventory management solution, designed to streamline operations and enhance efficiency.  
+                Easily add and manage suppliers, track inventory items, and monitor stock levels with real-time insights.  
+                The intuitive interface ensures seamless navigation, allowing you to stay organized and make informed decisions.  
+                Keep your inventory under control and focus on what truly matters—growing your business.  
+            </p>
+
+            <h3>Inventory Summary</h3>
+            <p>Total Items: <span>{{ total_items }}</span></p>
+            <p>Total Inventory Value: $<span>{{ total_inventory_value|floatformat:2 }}</span></p>
+        </div>
+    </div>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>
