@@ -1,150 +1,117 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Inventory - Inventory Management</title>
-    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
-</head>
-<body>
-    <div class="sidebar">
-        <h2>Navigation</h2>
-        <ul>
-            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
-            <li><a href="{% url 'help' %}">Help & Support</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <div class="header">
-            <h1>InvenSync:</h1>
-            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
-        </div>
-        <div class="container">
-            <h2>Inventory Management</h2>
-            <p>Manage your inventory efficiently.</p>
-            
-            <!-- Inventory Form -->
+{% extends "base.html" %}
 
-            
-            
-            <form method="POST">
-                {% csrf_token %}
-                <input type="text" name="name" placeholder="Item Name" required>
-                <input type="number" name="quantity" placeholder="Quantity" required>
-                <input type="number" step="0.01" name="price" placeholder="Price" required>
-                <!-- <input type="text" name = 'category' placeholder="Category">  -->
-                <button type="submit">Add Item</button>
-            </form>
-<!--ADDING SORTING BUTTONS HERE!-->
-            
-                         <!-- Sorting Buttons -->
-                <div class="sorting-buttons">
-                    <h3>Sort By:</h3>
-                    <a href="?sort_by=total_cost&order=asc" class="action-btn">Total Cost (Asc)</a>
-                    <a href="?sort_by=total_cost&order=desc" class="action-btn">Total Cost (Desc)</a>
-                    <a href="?sort_by=price&order=asc" class="action-btn">Price (Asc)</a>
-                    <a href="?sort_by=price&order=desc" class="action-btn">Price (Desc)</a>
-                    <a href="?sort_by=quantity&order=asc" class="action-btn">Quantity (Asc)</a>
-                    <a href="?sort_by=quantity&order=desc" class="action-btn">Quantity (Desc)</a>
-                    <a href="?sort_by=created_at&order=asc" class="action-btn">Time Added (First to Last)</a>
-                    <a href="?sort_by=created_at&order=desc" class="action-btn">Time Added (Last to First)</a>
-                </div>
-<!-- ABOVEE we are adding the sorting buttons to the table -->
-            
-            <!-- Inventory Table -->
-            <table id="inventoryTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <!-- <th>Category</th> -->
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in inventory_items %}
-                    <tr>
-                        <td>{{ item.name }}</td>
-                        <!--Here was about category-->
-                        <td>{{ item.quantity }}</td>
-                        <td>${{ item.price }}</td>
-                        <td>${{ item.total_cost|floatformat:2}}</td>
-                        <td>
-                            <!-- Edit Button -->
-                            <a href="{% url 'edit_inventory' item.id %}" class="action-btn edit-btn">Edit</a>
-                            <!-- Delete Button -->
-                            <a href="{% url 'delete_inventory' item.id %}" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-                        </td>
-                    </tr>
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">PRODUCTS & STOCK</p>
+        <h1>Inventory</h1>
+        <p class="page-subtitle">Track quantities, unit prices, and the suppliers behind your stock.</p>
+    </div>
+    <a class="button button-primary" href="#add-item">＋ Add item</a>
+</section>
+
+<section class="inventory-layout">
+    <aside class="panel add-item-panel" id="add-item">
+        <div class="panel-heading">
+            <div><h2>Add an item</h2><p>Enter the product details to get started.</p></div>
+            <span class="form-step">01</span>
+        </div>
+        <form method="post" class="app-form">
+            {% csrf_token %}
+            {% include "partials/form_fields.html" with form=form %}
+            <button type="submit" class="button button-primary button-full">Add to inventory <span aria-hidden="true">→</span></button>
+        </form>
+    </aside>
+
+    <section class="panel inventory-panel">
+        <div class="panel-heading inventory-title-row">
+            <div><h2>All inventory</h2><p>{{ page_obj.paginator.count }} item{{ page_obj.paginator.count|pluralize }} in your workspace</p></div>
+            <span class="count-pill">{{ page_obj.paginator.count }}</span>
+        </div>
+        <form method="get" class="filter-bar">
+            <label class="search-field">
+                <span class="sr-only">Search inventory</span>
+                <span aria-hidden="true">⌕</span>
+                <input type="search" name="q" value="{{ search }}" placeholder="Search items or suppliers">
+            </label>
+            <label class="filter-select">
+                <span class="sr-only">Filter by supplier</span>
+                <select name="supplier">
+                    <option value="">All suppliers</option>
+                    {% for supplier in suppliers %}
+                        <option value="{{ supplier.id }}"{% if selected_supplier == supplier.id|stringformat:"s" %} selected{% endif %}>{{ supplier.name }}</option>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</body>
-</html>
-
-
-<!-- The follwoing was before db conn
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Inventory Management</title>
-    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
-</head>
-<body>
-    <div class="sidebar">
-        <h2>Navigation</h2>
-        <ul>
-            <li><a href="{% url 'dashboard' %}" class="active">Dashboard</a></li>
-            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
-            <li><a href="{% url 'help' %}">Help & Support</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <div class="header">
-            <h1>InvenSync:</h1>
-            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
-        </div>
-        <div class="container">
-            <h2>Inventory Management</h2>
-            <p>Manage your inventory efficiently.</p>
-            <!-- Inventory Form --> <!--Here the extra comment
-            <div class="form-group">
-                <input type="text" id="itemName" placeholder="Item Name">
-                <input type="number" id="itemQuantity" placeholder="Quantity">
-                <input type="number" id="itemPrice" placeholder="Price">
-                <button id="addItemBtn">ADD ITEM</button>
+                </select>
+            </label>
+            <label class="filter-select">
+                <span class="sr-only">Filter by stock status</span>
+                <select name="stock">
+                    <option value="">All stock levels</option>
+                    <option value="low"{% if stock_status == "low" %} selected{% endif %}>Low stock</option>
+                    <option value="out"{% if stock_status == "out" %} selected{% endif %}>Out of stock</option>
+                    <option value="healthy"{% if stock_status == "healthy" %} selected{% endif %}>Healthy stock</option>
+                </select>
+            </label>
+            {% if sort_by %}<input type="hidden" name="sort" value="{{ sort_by }}">{% endif %}
+            {% if order %}<input type="hidden" name="order" value="{{ order }}">{% endif %}
+            <button class="button button-secondary" type="submit">Filter</button>
+            {% if search or selected_supplier or stock_status %}<a class="clear-filters" href="{% url 'manage' %}">Clear</a>{% endif %}
+        </form>
+        {% if items %}
+            <div class="table-wrap inventory-table-wrap">
+                <table class="data-table inventory-table">
+                    <thead>
+                        <tr>
+                            <th><a href="?{{ sort_urls.name }}">Item <span class="sort-indicator">{% if sort_by == "name" %}{% if order == "asc" %}↑{% else %}↓{% endif %}{% else %}↕{% endif %}</span></a></th>
+                            <th>Supplier</th>
+                            <th><a href="?{{ sort_urls.quantity }}">Quantity <span class="sort-indicator">{% if sort_by == "quantity" %}{% if order == "asc" %}↑{% else %}↓{% endif %}{% else %}↕{% endif %}</span></a></th>
+                            <th><a href="?{{ sort_urls.price }}">Unit price <span class="sort-indicator">{% if sort_by == "price" %}{% if order == "asc" %}↑{% else %}↓{% endif %}{% else %}↕{% endif %}</span></a></th>
+                            <th><a href="?{{ sort_urls.value }}">Stock value <span class="sort-indicator">{% if sort_by == "value" %}{% if order == "asc" %}↑{% else %}↓{% endif %}{% else %}↕{% endif %}</span></a></th>
+                            <th>Status</th>
+                            <th><span class="sr-only">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td><a class="item-link" href="{% url 'edit_inventory' item.id %}">{{ item.name }}</a><small class="item-id">INV-{{ item.id|stringformat:"05d" }}</small></td>
+                                <td>{{ item.supplier.name|default:"—" }}</td>
+                                <td><span class="quantity-badge{% if item.quantity <= item.reorder_level %} quantity-low{% endif %}">{{ item.quantity }}</span></td>
+                                <td>${{ item.price|floatformat:2 }}</td>
+                                <td class="cell-strong">${{ item.stock_value|floatformat:2 }}</td>
+                                <td>{% if item.quantity == 0 %}<span class="status-badge status-out">Out of stock</span>{% elif item.quantity <= item.reorder_level %}<span class="status-badge status-low">Low stock</span>{% else %}<span class="status-badge status-good">In stock</span>{% endif %}</td>
+                                <td>
+                                    <div class="row-actions">
+                                        <a class="icon-button" href="{% url 'edit_inventory' item.id %}" aria-label="Edit {{ item.name }}" title="Edit">✎</a>
+                                        <form method="post" action="{% url 'delete_inventory' item.id %}" data-confirm="Delete {{ item.name }}? This action cannot be undone.">
+                                            {% csrf_token %}
+                                            <button class="icon-button danger-action" type="submit" aria-label="Delete {{ item.name }}" title="Delete">×</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <!-- Inventory Table --><!--Here the extra comment
-            <table id="inventoryTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total Cost</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <!-- Inventory Summary --><!--Here the extra comment
-            <div id="inventory-summary">
-                <h3>Inventory Summary</h3>
-                <p>Total Items: <span id="total-items">0</span></p>
-                <p>Low Stock Items: <span id="low-stock">0</span></p>
-                <p>Total Inventory Value: $<span id="total-value">0.00</span></p>
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="pagination" aria-label="Inventory pages">
+                    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    <div>
+                        {% if page_urls.previous %}<a class="button button-secondary button-small" href="?{{ page_urls.previous }}">← Previous</a>{% endif %}
+                        {% if page_urls.next %}<a class="button button-secondary button-small" href="?{{ page_urls.next }}">Next →</a>{% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="empty-state table-empty">
+                <span class="empty-icon">{% if search or selected_supplier or stock_status %}⌕{% else %}▤{% endif %}</span>
+                <strong>{% if search or selected_supplier or stock_status %}No matching items{% else %}No inventory yet{% endif %}</strong>
+                <p>{% if search or selected_supplier or stock_status %}Try changing your search or filters.{% else %}Use the form to add your first item to the workspace.{% endif %}</p>
             </div>
-        </div>
-    </div>
-    <script src="{% static 'js/manage.js' %}"></script>
-</body>
-</html>
+        {% endif %}
+    </section>
+</section>
+{% endblock %}

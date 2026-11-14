@@ -1,44 +1,21 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help - Inventory Management System</title>
-    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
-</head>
-<body>
-    <div class="sidebar">
-        <h2>Navigation</h2>
-        <ul>
-            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-            <li><a href="{% url 'manage' %}" class="active">Manage Inventory</a></li>
-            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <div class="header">
-            <h1>InvenSync:</h1>
-            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
-        </div>
-        
-        <div id="inventory-summary">
-            <p>
-                Welcome to InvenSync! This platform helps you manage your inventory efficiently.  
-                On the <strong>Suppliers</strong> page, you can add new suppliers, update their contact details, and delete entries as needed.  
-                The <strong>Manage</strong> page allows you to add inventory items, specify their quantity and price, and track total costs.  
-                The system also provides an inventory summary, highlighting total items, low-stock warnings, and overall inventory value.  
-                Use the provided buttons to edit or remove entries as required. Your data is stored locally for easy access.  
-            </p>
-            <p>
-                Need assistance? We're here to help! If you have any questions or face any issues while using InvenSync,  
-                feel free to reach out to our support team. You can contact us via email at  
-                <a href="mailto:support@invencsync.com">support@invencsync.com</a> or call us at +91 XXXXXXXXXX.  
-                Our support hours are Monday to Friday, 9 AM to 6 PM IST.  
-            </p>
-        </div>
-    </div>
+{% extends "base.html" %}
 
-    <!-- <script src="{% static 'js/dashboard.js' %}"></script> -->
-</body>
-</html>
+{% block title %}Help & guide{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">GETTING STARTED</p>
+        <h1>Help & guide</h1>
+        <p class="page-subtitle">A quick guide to keeping your inventory workspace useful and accurate.</p>
+    </div>
+</section>
+<section class="help-grid">
+    <article class="panel help-card"><span class="help-number">01</span><h2>Add suppliers</h2><p>Create a supplier profile with its name, materials, and contact details. Supplier records can be linked to inventory items.</p><a class="text-link" href="{% url 'suppliers' %}">Open suppliers <span aria-hidden="true">→</span></a></article>
+    <article class="panel help-card"><span class="help-number">02</span><h2>Track inventory</h2><p>Add an item with its quantity, unit price, supplier, and low-stock threshold. Quantities and prices cannot be negative.</p><a class="text-link" href="{% url 'manage' %}">Open inventory <span aria-hidden="true">→</span></a></article>
+    <article class="panel help-card"><span class="help-number">03</span><h2>Review stock</h2><p>Use search, supplier filters, stock-status filters, and sortable columns to find items. Low-stock alerts use each item’s reorder level.</p><a class="text-link" href="{% url 'dashboard' %}">View overview <span aria-hidden="true">→</span></a></article>
+</section>
+<section class="panel help-note">
+    <span class="note-icon">i</span><div><h2>About inventory value</h2><p>Stock value is calculated from the current quantity multiplied by the unit price. It updates automatically whenever either value changes.</p></div>
+</section>
+{% endblock %}

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,13 +20,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-yu8#(o*j-%z%f(o-7qmmey(=ake=uj+j$=fjnqq8gu$l1j^6+c'
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "local-development-key-do-not-use-in-production",
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "true").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+}
+if not DEBUG and SECRET_KEY == "local-development-key-do-not-use-in-production":
+    raise RuntimeError("Set DJANGO_SECRET_KEY when DEBUG is disabled.")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if host.strip()
+]
 
 
 # Application definition
@@ -82,17 +94,16 @@ WSGI_APPLICATION = 'InventProject.wsgi.application'
 #     }
 # } #Just for information and incase we need to revert back#
 
-#FOLLOWING IS THE SET FOR MYSQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'inventory_mysqldb',
-        'USER': 'root',      # Replace with your MySQL username
-        'PASSWORD': 'P@MySql!!',  # Replace with your MySQL password
-        'HOST': 'localhost',          # Use '127.0.0.1' if localhost doesn't work
-        'PORT': '3306',               # Default MySQL port    
+        'USER': 'root',              # Replace with your MySQL username
+        'PASSWORD': 'P@MySql!',   # Replace with your MySQL password
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
-}######Done#####
+}
 
 
 # Password validation

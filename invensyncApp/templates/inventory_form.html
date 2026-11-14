@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Edit inventory item{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">INVENTORY DETAILS</p>
+        <h1>Edit item</h1>
+        <p class="page-subtitle">Update the stock or supplier details for {{ item.name }}.</p>
+    </div>
+    <a class="button button-secondary" href="{% url 'manage' %}">← Back to inventory</a>
+</section>
+<section class="panel form-page-panel">
+    <div class="panel-heading"><div><h2>{{ item.name }}</h2><p>Item INV-{{ item.id|stringformat:"05d" }}</p></div></div>
+    <form method="post" class="app-form form-grid">
+        {% csrf_token %}
+        {% include "partials/form_fields.html" with form=form %}
+        <div class="form-actions"><a class="button button-secondary" href="{% url 'manage' %}">Cancel</a><button type="submit" class="button button-primary">Save changes <span aria-hidden="true">→</span></button></div>
+    </form>
+</section>
+{% endblock %}

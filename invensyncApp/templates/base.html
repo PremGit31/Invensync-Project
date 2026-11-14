@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <title>{% block title %}InvenSync{% endblock %} · InvenSync</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="app-sidebar">
+            <a class="brand" href="{% url 'dashboard' %}" aria-label="InvenSync home">
+                <span class="brand-mark">I</span>
+                <span class="brand-copy"><strong>invensync</strong><small>Inventory workspace</small></span>
+            </a>
+            <div class="nav-label">WORKSPACE</div>
+            <nav class="primary-nav" aria-label="Main navigation">
+                <a href="{% url 'dashboard' %}" class="nav-link{% if active_page == 'dashboard' %} is-active{% endif %}">
+                    <span class="nav-icon" aria-hidden="true">⌂</span><span>Overview</span>
+                </a>
+                <a href="{% url 'manage' %}" class="nav-link{% if active_page == 'inventory' %} is-active{% endif %}">
+                    <span class="nav-icon" aria-hidden="true">▤</span><span>Inventory</span>
+                </a>
+                <a href="{% url 'suppliers' %}" class="nav-link{% if active_page == 'suppliers' %} is-active{% endif %}">
+                    <span class="nav-icon" aria-hidden="true">♧</span><span>Suppliers</span>
+                </a>
+            </nav>
+            <div class="sidebar-bottom">
+                <div class="sidebar-note">
+                    <span class="note-icon" aria-hidden="true">✦</span>
+                    <strong>Stay in sync</strong>
+                    <p>Keep stock and supplier details up to date from one place.</p>
+                </div>
+                <a href="{% url 'help' %}" class="nav-link{% if active_page == 'help' %} is-active{% endif %}">
+                    <span class="nav-icon" aria-hidden="true">?</span><span>Help & guide</span>
+                </a>
+                <div class="sidebar-footer"><span class="status-dot"></span> Inventory workspace</div>
+            </div>
+        </aside>
+
+        <div class="main-shell">
+            <header class="topbar">
+                <button class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="app-sidebar" aria-expanded="false" data-menu-toggle>☰</button>
+                <div class="topbar-context"><span class="context-dot"></span> Workspace <span class="context-divider">/</span> {{ active_page|default:"overview"|title }}</div>
+                <a class="topbar-help" href="{% url 'help' %}"><span aria-hidden="true">?</span> Help</a>
+            </header>
+
+            <main class="page-content">
+                {% if messages %}
+                    <div class="messages" role="status" aria-live="polite">
+                        {% for message in messages %}
+                            <div class="message message-{{ message.tags|default:'info' }}">
+                                <span>{{ message }}</span>
+                                <button type="button" class="message-dismiss" aria-label="Dismiss message" data-dismiss>×</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </main>
+            <footer class="app-footer"><span>InvenSync</span><span>Inventory, in good order.</span></footer>
+        </div>
+    </div>
+    <div class="sidebar-scrim" data-sidebar-scrim></div>
+    <script src="{% static 'js/app.js' %}" defer></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

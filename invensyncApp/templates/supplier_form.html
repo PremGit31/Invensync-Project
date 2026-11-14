@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Edit supplier{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">SUPPLIER DETAILS</p>
+        <h1>Edit supplier</h1>
+        <p class="page-subtitle">Keep {{ supplier.name }}’s information current.</p>
+    </div>
+    <a class="button button-secondary" href="{% url 'suppliers' %}">← Back to suppliers</a>
+</section>
+<section class="panel form-page-panel">
+    <div class="panel-heading"><div><h2>{{ supplier.name }}</h2><p>Supplier profile</p></div></div>
+    <form method="post" class="app-form form-grid">
+        {% csrf_token %}
+        {% include "partials/form_fields.html" with form=form %}
+        <div class="form-actions"><a class="button button-secondary" href="{% url 'suppliers' %}">Cancel</a><button type="submit" class="button button-primary">Save changes <span aria-hidden="true">→</span></button></div>
+    </form>
+</section>
+{% endblock %}

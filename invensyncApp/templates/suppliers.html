@@ -1,122 +1,70 @@
-<!--CHANGES FOR DB WERE MADE TO SETTINGS.PY, VIEWS, MODELS =, THIS FILE AND MANAGE.HTML-->
-{% load static %}   
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suppliers - Inventory Management</title>
-    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
-</head>
-<body>
-    <div class="sidebar">
-        <h2>Navigation</h2>
-        <ul>
-            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-            <li><a href="{% url 'manage' %}" class="active">Manage Inventory</a></li>
-            <li><a href="{% url 'help' %}">Help & Support</a></li>
-        </ul>
+{% extends "base.html" %}
+
+{% block title %}Suppliers{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">YOUR SUPPLY NETWORK</p>
+        <h1>Suppliers</h1>
+        <p class="page-subtitle">Keep supplier details close to the inventory they support.</p>
     </div>
-    <div class="main-content">
-        <div class="header">
-            <h1>InvenSync:</h1>
-            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
+</section>
+
+<section class="supplier-layout">
+    <aside class="panel add-item-panel supplier-form-panel">
+        <div class="panel-heading">
+            <div><h2>Add a supplier</h2><p>Create a new supplier profile.</p></div>
+            <span class="form-step">01</span>
         </div>
-        <div class="container">
-            <h2>Suppliers Management</h2>
-            <p>Manage your suppliers efficiently.</p>
-            
-            <!-- Supplier Form -->
-            <form method="POST">
-                {% csrf_token %}
-                <input type="text" name="name" placeholder="Supplier Name" required>
-                <input type="text" name="material" placeholder="Material" required>
-                <input type="text" name="contact" placeholder="Contact Number" required>
-                <button type="submit">Add Supplier</button>
-            </form>
-            
-            <!-- Supplier Table -->
-            <table id="inventoryTable">
-                <thead>
-                    <tr>
-                        <th>Supplier</th>
-                        <th>Material</th>
-                        <th>Contact Number</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for supplier in suppliers %}
-                    <tr>
-                        <td>{{ supplier.name }}</td>
-                        <td>{{ supplier.material }}</td>
-                        <td>{{ supplier.contact }}</td>
-                        <td>
-                            <!-- Edit Button -->
-                            <a href="{% url 'edit_supplier' supplier.id %}" class="action-btn edit-btn">Edit</a>
-                            <!-- Delete Button -->
-                            <a href="{% url 'delete_supplier' supplier.id %}" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this supplier?');">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <form method="post" class="app-form">
+            {% csrf_token %}
+            {% include "partials/form_fields.html" with form=form %}
+            <button type="submit" class="button button-primary button-full">Add supplier <span aria-hidden="true">→</span></button>
+        </form>
+    </aside>
+
+    <section class="panel supplier-list-panel">
+        <div class="panel-heading">
+            <div><h2>Supplier directory</h2><p>{{ suppliers|length }} supplier{{ suppliers|length|pluralize }} listed</p></div>
         </div>
-    </div>
-</body>
-</html>
-
-
-
-
-<!-- THE FOLLOWING WAS THE INITIAL HTML BEFORE APPLYING DATABASE CONNECTION
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suppliers - Inventory Management</title>
-    <link rel="stylesheet" href="{% static 'css/manage.css' %}">
-</head>
-<body>
-    <div class="sidebar">
-        <h2>Navigation</h2>
-        <ul>
-            <li><a href="{% url 'dashboard' %}" class="active">Dashboard</a></li>
-            <li><a href="{% url 'suppliers' %}">Suppliers</a></li>
-            <li><a href="{% url 'help' %}">Help & Support</a></li>
-        </ul>
-    </div>
-    <div class="main-content">
-        <div class="header">
-            <h1>InvenSync:</h1>
-            <p>"Streamlining Your Inventory, Simplifying Your Success"</p>
-        </div>
-        <div class="container">
-            <h2>Inventory Management</h2>
-            <p>Manage your inventory efficiently.</p>
-            <!-- Inventory Form --><!--Here is extra comment
-            <div class="form-group">
-                <input type="text" id="itemName" placeholder="Supplier">
-                <input type="text" id="itemQuantity" placeholder="Material">
-                <input type="number" id="itemPrice" placeholder="Contact Number">
-                <button id="addItemBtn">ADD</button>
+        <form method="get" class="filter-bar supplier-search">
+            <label class="search-field">
+                <span class="sr-only">Search suppliers</span>
+                <span aria-hidden="true">⌕</span>
+                <input type="search" name="q" value="{{ search }}" placeholder="Search suppliers, materials, contacts">
+            </label>
+            <button class="button button-secondary" type="submit">Search</button>
+            {% if search %}<a class="clear-filters" href="{% url 'suppliers' %}">Clear</a>{% endif %}
+        </form>
+        {% if suppliers %}
+            <div class="table-wrap">
+                <table class="data-table supplier-table">
+                    <thead><tr><th>Supplier</th><th>Materials</th><th>Contact</th><th>Items</th><th><span class="sr-only">Actions</span></th></tr></thead>
+                    <tbody>
+                        {% for supplier in suppliers %}
+                            <tr>
+                                <td><span class="supplier-avatar">{{ supplier.name|first|upper }}</span><span class="supplier-name">{{ supplier.name }}</span></td>
+                                <td>{{ supplier.material }}</td>
+                                <td>{{ supplier.contact }}</td>
+                                <td><span class="count-pill">{{ supplier.item_count }}</span></td>
+                                <td>
+                                    <div class="row-actions">
+                                        <a class="icon-button" href="{% url 'edit_supplier' supplier.id %}" aria-label="Edit {{ supplier.name }}" title="Edit">✎</a>
+                                        <form method="post" action="{% url 'delete_supplier' supplier.id %}" data-confirm="Delete {{ supplier.name }}? Linked inventory will remain and become unassigned.">
+                                            {% csrf_token %}
+                                            <button class="icon-button danger-action" type="submit" aria-label="Delete {{ supplier.name }}" title="Delete">×</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <!-- Inventory Table --><!-- Here is extra comment
-            <table id="inventoryTable">
-                <thead>
-                    <tr>
-                        <th>Supplier</th>
-                        <th>Material</th>
-                        <th>Contact Number</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <script src="{% static 'js/suppliers.js' %}"></script>
-</body>
-</html>
+        {% else %}
+            <div class="empty-state table-empty"><span class="empty-icon">♧</span><strong>{% if search %}No matching suppliers{% else %}No suppliers yet{% endif %}</strong><p>{% if search %}Try a different search term.{% else %}Add a supplier, then link it to inventory items.{% endif %}</p></div>
+        {% endif %}
+    </section>
+</section>
+{% endblock %}
